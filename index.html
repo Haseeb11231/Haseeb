@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Futuristic Website with Game</title>
+    <style>
+        body {
+            background-color: #0d0d0d;
+            color: #0ff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        h1 {
+            font-size: 3em;
+            text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
+            animation: glow 1.5s infinite alternate;
+        }
+        p {
+            font-size: 1.2em;
+            max-width: 600px;
+            text-shadow: 0 0 5px #0ff;
+        }
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
+            }
+            to {
+                text-shadow: 0 0 20px #0ff, 0 0 40px #0ff;
+            }
+        }
+        .game-container {
+            width: 300px;
+            height: 400px;
+            background: black;
+            border: 2px solid #0ff;
+            position: relative;
+            overflow: hidden;
+        }
+        .player {
+            width: 30px;
+            height: 30px;
+            background: #0ff;
+            position: absolute;
+            bottom: 10px;
+            left: 135px;
+        }
+        .obstacle {
+            width: 30px;
+            height: 30px;
+            background: red;
+            position: absolute;
+            top: 0;
+            left: 135px;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container" id="game">
+        <div class="player" id="player"></div>
+        <div class="obstacle" id="obstacle"></div>
+    </div>
+    <div class="container">
+        <h1>Welcome to the Future</h1>
+        <p>Experience a futuristic web design with neon effects and a playable game.</p>
+    </div>
+    <script>
+        let player = document.getElementById("player");
+        let obstacle = document.getElementById("obstacle");
+        let game = document.getElementById("game");
+        let gameOver = false;
+        let moveLeft = false, moveRight = false;
+
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "ArrowLeft") moveLeft = true;
+            if (e.key === "ArrowRight") moveRight = true;
+        });
+        document.addEventListener("keyup", (e) => {
+            if (e.key === "ArrowLeft") moveLeft = false;
+            if (e.key === "ArrowRight") moveRight = false;
+        });
+
+        function movePlayer() {
+            let playerPos = player.offsetLeft;
+            if (moveLeft && playerPos > 0) player.style.left = playerPos - 5 + "px";
+            if (moveRight && playerPos < game.clientWidth - player.clientWidth) player.style.left = playerPos + 5 + "px";
+        }
+
+        function moveObstacle() {
+            if (gameOver) return;
+            let obstaclePos = obstacle.offsetTop;
+            obstacle.style.top = obstaclePos + 5 + "px";
+            if (obstaclePos > game.clientHeight) {
+                obstacle.style.top = "0px";
+                obstacle.style.left = Math.random() * (game.clientWidth - obstacle.clientWidth) + "px";
+            }
+            checkCollision();
+        }
+
+        function checkCollision() {
+            let playerRect = player.getBoundingClientRect();
+            let obstacleRect = obstacle.getBoundingClientRect();
+            if (
+                playerRect.left < obstacleRect.right &&
+                playerRect.right > obstacleRect.left &&
+                playerRect.bottom > obstacleRect.top &&
+                playerRect.top < obstacleRect.bottom
+            ) {
+                alert("Game Over! You lost.");
+                gameOver = true;
+                obstacle.style.display = "none";
+            }
+        }
+
+        function gameLoop() {
+            movePlayer();
+            moveObstacle();
+            if (!gameOver) requestAnimationFrame(gameLoop);
+        }
+        gameLoop();
+    </script>
+</body>
+</html>
