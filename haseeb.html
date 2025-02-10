@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Futuristic Website</title>
+    <style>
+        /* General Styles */
+        body {
+            margin: 0;
+            padding: 0;
+            background: black;
+            font-family: Arial, sans-serif;
+            color: cyan;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        /* Glowing Text Animation */
+        h1 {
+            font-size: 50px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px cyan, 0 0 20px cyan, 0 0 40px cyan;
+            animation: glow 2s infinite alternate;
+        }
+
+        @keyframes glow {
+            0% { text-shadow: 0 0 10px cyan, 0 0 20px cyan, 0 0 40px cyan; }
+            100% { text-shadow: 0 0 20px cyan, 0 0 30px cyan, 0 0 50px cyan; }
+        }
+
+        /* Neon Button */
+        .button {
+            background: transparent;
+            border: 2px solid cyan;
+            padding: 15px 30px;
+            color: cyan;
+            font-size: 20px;
+            cursor: pointer;
+            transition: 0.5s;
+            margin-top: 20px;
+            box-shadow: 0 0 10px cyan;
+        }
+
+        .button:hover {
+            background: cyan;
+            color: black;
+            box-shadow: 0 0 20px cyan, 0 0 40px cyan;
+        }
+
+        /* Moving Particles Effect */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Welcome to the Future</h1>
+    <p>Created by Haseeb</p>
+    <button class="button">Explore</button>
+
+    <!-- Particle Background -->
+    <canvas class="particles"></canvas>
+
+    <script>
+        /* Particle Animation */
+        const canvas = document.querySelector(".particles");
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let particles = [];
+        const numParticles = 100;
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 4 + 1;
+                this.speedX = Math.random() * 3 - 1.5;
+                this.speedY = Math.random() * 3 - 1.5;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+            }
+
+            draw() {
+                ctx.fillStyle = "cyan";
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.fill();
+            }
+        }
+
+        function init() {
+            for (let i = 0; i < numParticles; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+
+        init();
+        animate();
+    </script>
+
+</body>
+</html>
